@@ -23,7 +23,7 @@ type ColType = Vec<String>;
 type RowType = Vec<Vec<String>>;
 
 #[derive(Parser)]
-#[clap(author="dammi-i", version=VERSION, about="parses data into a table format")]
+#[clap(author="dammi-i", version=VERSION, about="a CLI utility to format data into a table")]
 struct Opts {
     #[clap(
         short = 'c',
@@ -31,21 +31,15 @@ struct Opts {
         required = false,
         parse(from_str = parse_columns)
     )]
-    columns: ColType,
+    columns: Option<ColType>,
     #[clap(
         short = 'r',
         long = "rows",
         required = false,
         parse(from_str = parse_rows),
-        help = "set table rows, it must match the format \"rows...|rows....\""
+        help = "set table rows, it must match the format \"row...|row....\""
     )]
-    rows: RowType,
-    #[clap(
-        short = 'i',
-        long = "readstdin",
-        help = "ignores command line arguments and reads data from stdin"
-    )]
-    read_from_stdin: bool,
+    rows: Option<RowType>,
     #[clap(
         short = 's',
         long = "style",
@@ -54,19 +48,32 @@ struct Opts {
         default_value = "fancy1"
     )]
     style: String,
+    #[clap(short = 'S', long = "styles", help = "display available styles")]
+    styles: bool,
 }
 
 fn main() {
     let opt = Opts::parse();
     let mut table = Table::with_format(FORMATS.with(|m| m.borrow()[opt.style.as_str()].clone()));
-    if opt.read_from_stdin {
-        let mut input = String::new();
-        std::io::stdio().read_line(&mut input).unwrap();
-        input.pop();
+    if opt.styles {
+        let fmts = FORMATS.with(|m| {
+            m.borrow()
+                .keys()
+                .map(|s| String::from(*s))
+                .collect::<Vec<String>>()
+        });
+        println!("availables styles:");
+        for (i, n) in fmts.into_iter().enumerate() {
+            println!("\t{}: {}", i, n);
+        }
     }
-    table.add_columns(opt.columns);
-    for row in opt.rows {
-        table.add_row(row);
+    if let Some(columns) = opt.columns {
+        table.add_columns(columns);
     }
-    println!("{}", table.render().unwrap());
+    if let Some(rows) = opt.rows {
+        for row in rows {
+            table.add_row(row);
+        }
+        println!("{}", table.render().unwrap());
+    }
 }

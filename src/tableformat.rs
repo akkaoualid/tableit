@@ -1,13 +1,6 @@
 use std::cell::RefCell;
 use std::collections::HashMap;
 
-#[cfg(feature = "color")]
-#[derive(Clone, Debug)]
-pub struct ColorFormat {
-    column: Color,
-    row: Color,
-}
-
 #[derive(Clone, Debug)]
 pub struct ColumnFormat {
     pub top_right_corner: &'static str,
@@ -36,8 +29,6 @@ pub struct RowFormat {
 pub struct TableFormat {
     pub column: ColumnFormat,
     pub row: RowFormat,
-    #[cfg(feature = "color")]
-    pub color: ColorFormat,
 }
 
 thread_local! {
@@ -110,7 +101,59 @@ pub static FORMATS: RefCell<HashMap<&'static str, TableFormat>> = RefCell::new((
                 line: "═",
             }
         });
+        /* ━, ┌, └, ├
+        */
+        map.insert(
+        "light",
+        TableFormat {
+            column: ColumnFormat {
+                top_right_corner: "┌",
+                bot_right_corner: "├",
+                top_left_corner: "┐",
+                bot_left_corner: "┤",
+                separator: "│",
+                top_separator: "┬",
+                mid_separator: "┼",
+                bot_separator: "┴",
+                line: "─",
+            },
+            row: RowFormat {
+                right_corner: "├",
+                left_corner: "┤",
+                bot_right_corner: "└",
+                bot_left_corner:"┘",
+                separator: "│",
+                bot_separator: "┴",
+                line: "─",
+            }
+        });
+        map.insert(
+        "single",
+        TableFormat {
+            column: ColumnFormat {
+                top_right_corner: " ",
+                bot_right_corner: " ",
+                top_left_corner: " ",
+                bot_left_corner: " ",
+                separator: " ",
+                top_separator: " ",
+                mid_separator: " ",
+                bot_separator: " ",
+                line: "-",
+            },
+            row: RowFormat {
+                right_corner: " ",
+                left_corner: " ",
+                bot_right_corner: " ",
+                bot_left_corner:" ",
+                separator: " ",
+                bot_separator: " ",
+                line: " ",
+
+            }
+        });
     map
+
 })()
 );
 }

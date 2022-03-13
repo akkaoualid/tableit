@@ -10,32 +10,10 @@ pub struct Table {
 }
 
 // TODO:
-// reformat to format_columns, format_rows and format functions
-// being able to set the maximum width
-// use tableformat
-// optimize some stuff
 // support custom formats
 // support colors as a feature
 // load from config files
 // publish to github & crates.io
-
-static COLUMN_START: &str = "-";
-static COLUMN_TOP_RCORNER: &str = "╭";
-static COLUMN_BOT_RCORNER: &str = "+";
-
-static COLUMN_TOP_LCORNER: &str = "╮";
-static COLUMN_BOT_LCORNER: &str = "+";
-static COLUMN_SEPARATOR: &str = "|";
-static COLUMN_TOP_SEPARATOR: &str = "+";
-static COLUMN_MID_SEPARATOR: &str = "+";
-static COLUMN_BOT_SEPARATOR: &str = "+";
-static COLUMN_END: &str = "-";
-
-static ROW_SEPARATOR: &str = "|";
-static ROW_END: &str = "-";
-
-static END_RCORNER: &str = "╰";
-static END_LCORNER: &str = "╯";
 
 impl Table {
     pub fn new() -> Self {
